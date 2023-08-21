@@ -1,0 +1,95 @@
+name: handover
+description: A new Flutter project.
+publish_to: 'none' # Remove this line if you wish to publish to pub.dev
+
+version: 1.0.0+1
+
+environment:
+  sdk: '>=3.0.3 <4.0.0'
+
+dependencies:
+  flutter:
+    sdk: flutter
+  cupertino_icons: ^1.0.2
+  intl: ^0.18.0
+  rxdart: ^0.27.7
+
+  # State management
+  get: ^4.6.5
+  # dependency injection
+  get_it: ^7.2.0
+
+  # Network
+  # Network connectivity checker
+  connectivity_plus: ^4.0.1
+  # local database
+  #  get_storage: ^2.1.1
+  shared_preferences: ^2.2.0
+  # permission generating handler
+  permission_handler: ^10.0.0
+  # UI alert and messages
+  font_awesome_flutter: ^10.2.1
+  flash: ^3.0.5+1
+  flip_card: ^0.7.0
+
+  flutter_fadein: ^2.0.0
+  flutter_animated_dialog: ^2.0.1
+  # location services
+  geolocator: ^9.0.1
+  google_maps_flutter: ^2.2.0
+  geocoding: ^2.0.5
+  map_location_picker: ^1.2.6
+  #  add poly-lines
+  location: ^5.0.1
+#  geocoder_buddy: ^1.0.1
+  url_launcher: ^6.1.9
+  #  firebase packages
+  firebase_core: ^2.6.1
+  firebase_messaging: ^14.2.4
+  flutter_local_notifications: ^15.1.0+1
+  device_info_plus: ^9.0.2
+
+  dio: ^5.0.0
+  http: ^0.13.1
+  flutter_polyline_points: ^1.0.0
+  flutter_rating_stars: ^1.0.3+4
+
+  timelines: ^0.1.0
+
+dependency_overrides:
+  http: ^1.1.0
+dev_dependencies:
+  flutter_test:
+    sdk: flutter
+  integration_test:
+    sdk: flutter
+
+  flutter_lints: ^2.0.2
+
+flutter:
+  uses-material-design: true
+
+  fonts:
+    - family: LamaSans
+      fonts:
+        - asset: assets/fonts/LamaSans/LamaSans-Thin.ttf
+          weight: 100
+        - asset: assets/fonts/LamaSans/LamaSans-Thin.ttf
+          weight: 200
+        - asset: assets/fonts/LamaSans/LamaSans-ExtraLight.ttf
+          weight: 300
+        - asset: assets/fonts/LamaSans/LamaSans-Light.ttf
+          weight: 400
+        - asset: assets/fonts/LamaSans/LamaSans-Regular.ttf
+          weight: 500
+        - asset: assets/fonts/LamaSans/LamaSans-Medium.ttf
+          weight: 600
+        - asset: assets/fonts/LamaSans/LamaSans-SemiBold.ttf
+          weight: 700
+        - asset: assets/fonts/LamaSans/LamaSans-Bold.ttf
+          weight: 800
+        - asset: assets/fonts/LamaSans/LamaSans-ExtraBold.ttf
+          weight: 900
+
+  assets:
+    - assets/images/
