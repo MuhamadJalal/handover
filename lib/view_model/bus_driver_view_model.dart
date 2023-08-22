@@ -8,6 +8,7 @@ import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:handover/helper/barrel_helper.dart';
 import 'package:handover/models/barrel_models.dart';
 import 'package:handover/repository/barrel_repository.dart';
+import 'package:handover/view_model/firebase_view_model.dart';
 import 'package:location/location.dart';
 import 'package:permission_handler/permission_handler.dart';
 
@@ -94,7 +95,7 @@ class BusDriversViewModel extends GetxController {
     update();
   }
 
-  void changeTripStatus(DeliveryModel deliveryModel) {
+  Future<void> changeTripStatus(DeliveryModel deliveryModel) async {
     'void changeTripStatus(${deliveryModel.tripStatus})'.debug(this);
     tripStatus.value = deliveryModel.tripStatus;
     if (completedDeliveryModelList.contains(deliveryModel)) {
@@ -110,6 +111,22 @@ class BusDriversViewModel extends GetxController {
         completedDeliveryModelList.addAll(deliveryModelsList.getRange(0, deliveryModelsList.indexOf(deliveryModel) + 1));
       }
     }
+
+    String notificationMsg = completedDeliveryModelList.isEmpty
+        ? 'The shipment arrived, confirm please :)'
+        : completedDeliveryModelList.last.tripStatus == TripStatus.waiting
+            ? 'The trip status updated to waiting state!'
+            : completedDeliveryModelList.last.tripStatus == TripStatus.coming
+                ? 'The trip started and our driver going to pick your shipment!'
+                : completedDeliveryModelList.last.tripStatus == TripStatus.pickUp
+                    ? 'Your shipment on its way!'
+                    : completedDeliveryModelList.last.tripStatus == TripStatus.nearDelivery
+                        ? 'The shipment approximately arrived, be ready!'
+                        : 'The shipment arrived, confirm please :)';
+
+    String userToken = (await FirebaseViewModel().getUserToken())!;
+    'void changeTripStatus( userToken $userToken)'.debug(this);
+    FirebaseViewModel().sendNotification(userToken: userToken, title: 'Sabbar', bodyMsg: notificationMsg);
     update();
   }
 

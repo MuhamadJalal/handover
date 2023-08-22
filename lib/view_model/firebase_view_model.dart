@@ -6,8 +6,8 @@ import 'package:flutter/material.dart';
 import 'package:get/get_utils/get_utils.dart';
 import 'package:handover/firebase_options.dart';
 import 'package:handover/helper/barrel_helper.dart';
-import 'package:handover/view/common_widget/notification_alert_widget.dart';
 import 'package:handover/view_model/local_notification_view_model.dart';
+import 'package:http/http.dart' as http;
 
 @pragma('vm:entry-point')
 Future<void> _firebaseMessagingBackgroundHandler(RemoteMessage message) async {
@@ -23,12 +23,14 @@ Future<void> _firebaseMessagingBackgroundHandler(RemoteMessage message) async {
   return;
 }
 
-class FirebaseServices {
-  FirebaseServices._internal();
+const serverKey = 'AAAAq1SBNug:APA91bFP_IwMMwUUiGSRZJDUaliyemoFAOR9SbpIg4uvIzHZqfE-IZxuGOq9P9ZdIjzziWjVeadTAjP6xgHOuqre-nXQt_YB2EHDIvcSKdMTx3MXe2b9EQoAyxHkJSZ6CywmIt7RNUpN';
 
-  static final FirebaseServices _services = FirebaseServices._internal();
+class FirebaseViewModel {
+  FirebaseViewModel._internal();
 
-  factory FirebaseServices() => _services;
+  static final FirebaseViewModel _services = FirebaseViewModel._internal();
+
+  factory FirebaseViewModel() => _services;
 
   signOutFirebase() async => await FirebaseMessaging.instance.deleteToken();
 
@@ -63,33 +65,6 @@ class FirebaseServices {
   startFirebaseMessaging() => getUserToken().then((userToken) {
         'FirebaseServices().getToken: $userToken'.debug(this);
 
-        // postAddToken(userToken: userToken);
-/*
-{
-  title: المساءلات,
-  titleLocArgs: [],
-  titleLocKey: null،
-  body: تم إضافة مساءلة جدبدة,
-  bodyLocArgs: [],
-  bodyLocKey: null,
-  apple: null,
-  web: null
-  android: {
-    channelId: null,
-    clickAction: null,
-    color: null,
-    count: null,
-    imageUrl: null,
-    priority: 0,
-    smallIcon: null,
-    sound: null,
-    ticker: null,
-    tag: null,
-    visibility: 0
-  },
-}
-
-* */
         FirebaseMessaging.onMessage.listen((RemoteMessage message) {
           'FirebaseMessaging message: $message'.debug(this);
           'FirebaseMessaging message.data: ${message.data}'.debug(this);
@@ -115,16 +90,63 @@ class FirebaseServices {
         });
       });
 
+  void sendNotification({
+    required String userToken,
+    required String title,
+    required String bodyMsg,
+    String? fromEmail,
+    String? fromName,
+    dynamic complainantId,
+  }) async {
+    try {
+      Map<String, dynamic> notification = {
+        'body': bodyMsg,
+        'title': title,
+        'click_action': 'FLUTTER_NOTIFICATION_CLICK',
+        'sound': 'default',
+      };
+
+      Map<String, dynamic> data = {
+        'click_action': 'FLUTTER_NOTIFICATION_CLICK',
+        'type': 'delivery',
+      };
+      'sendNotification push notification notification $notification'.debug(this);
+      'sendNotification push notification data $data'.debug(this);
+
+      http.Response response = await http.post(
+        Uri.parse('https://fcm.googleapis.com/fcm/send'),
+        headers: <String, String>{
+          'Content-Type': 'application/json; charset=UTF-8',
+          'Authorization': 'key=$serverKey',
+        },
+        body: jsonEncode(
+          <String, dynamic>{
+            'priority': 'high',
+            'to': userToken,
+            // 'to': userToken,
+            'click_action': 'FLUTTER_NOTIFICATION_CLICK',
+            'notification': notification,
+            'data': data,
+          },
+        ),
+      );
+      'sendNotification push notification response ${response.body}'.debug(this);
+    } catch (e) {
+      'sendNotification error push notification e $e'.debug(this);
+    }
+  }
+
   notificationViewer({RemoteMessage? remoteMessage, bool background = false, required from}) {
     'notificationViewer({RemoteNotification? notificationModel}) RemoteMessage from $from ${remoteMessage?.toMap()}'.debug(this);
     // Clipboard.setData(ClipboardData(text: notificationModel != null ? notificationModel.toMap().toString() : 'Notification is NULL!')).then((value) => 'Copied!'.toast(indicatorColor: Colors.red));
 
-    if (remoteMessage != null) {
-      if (background) {
-        LocalNotificationService().showNotification(remoteMessage, jsonEncode(remoteMessage.notification?.toMap()));
-      } else {
-        createAppDialog(child: NotificationAlert(notificationModel: remoteMessage.notification));
-      }
-    }
+    if (remoteMessage != null) LocalNotificationService().showNotification(remoteMessage, jsonEncode(remoteMessage.notification?.toMap()));
+    // if (remoteMessage != null) {
+    //   if (background) {
+    //     LocalNotificationService().showNotification(remoteMessage, jsonEncode(remoteMessage.notification?.toMap()));
+    //   } else {
+    //     createAppDialog(child: NotificationAlert(notificationModel: remoteMessage.notification));
+    //   }
+    // }
   }
 }

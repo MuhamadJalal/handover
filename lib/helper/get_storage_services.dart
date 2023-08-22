@@ -36,7 +36,7 @@ class GetStorageServices {
 
   clearStorageWithLogout() {
     prefs.clear();
-    FirebaseServices().stopFirebaseMessaging();
+    FirebaseViewModel().stopFirebaseMessaging();
   }
 
   clearGetStorage() => prefs.clear();

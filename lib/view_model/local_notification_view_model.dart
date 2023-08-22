@@ -132,8 +132,18 @@ class LocalNotificationService {
 
   /// todo RemoteMessage remoteMessage
   Future<void> showNotification(RemoteMessage remoteMessage, String notificationMsg) async {
-    const AndroidNotificationDetails androidPlatformChannelSpecifics = AndroidNotificationDetails('your channel id', 'your channel name',
-        channelDescription: 'your channel description', importance: Importance.max, priority: Priority.high, fullScreenIntent: true, ticker: 'ticker');
+    const AndroidNotificationDetails androidPlatformChannelSpecifics = AndroidNotificationDetails(
+      'io.share.handover',
+      'sabbar_channel',
+      channelDescription: 'your channel description',
+      importance: Importance.max,
+      priority: Priority.high,
+      fullScreenIntent: true,
+      setAsGroupSummary: true,
+      ticker: 'ticker',
+      groupAlertBehavior: GroupAlertBehavior.all,
+      groupKey: 'io.share.handover',
+    );
     const NotificationDetails platformChannelSpecifics = NotificationDetails(android: androidPlatformChannelSpecifics);
 
     // _configureLocalTimeZone();
@@ -141,24 +151,17 @@ class LocalNotificationService {
     'Future<void> showNotification(String notificationMsg $notificationMsg'.debug(this);
     'Future<void> showNotification(String remoteMessage ${remoteMessage.toMap()}'.debug(this);
 
-    /*
-    {
-        title: المساءلات, titleLocArgs: [], titleLocKey: null, body: تم إضافة مساءلة جدبدة, bodyLocArgs: [], bodyLocKey: null,
-        android: {channelId: null, clickAction: null, color: null, count: null, imageUrl: null,
-        apple: null, web: null
-    }
-    * */
-
+    int notificationNo = (await FlutterLocalNotificationsPlugin().getActiveNotifications()).length;
     if (notificationMsg.toLowerCase().contains('android') || notificationMsg.toLowerCase().contains('apple')) {
       var notificationPayload = jsonDecode(notificationMsg);
       if (notificationPayload is Map<String, dynamic> && notificationPayload.containsKey('title') && notificationPayload.containsKey('body')) {
         await FlutterLocalNotificationsPlugin()
-            .show(0, notificationPayload['title'] ?? AppTranslations.title, notificationPayload['body'] ?? '', platformChannelSpecifics, payload: jsonEncode(remoteMessage.toMap()));
+            .show(notificationNo, notificationPayload['title'] ?? AppTranslations.title, notificationPayload['body'] ?? '', platformChannelSpecifics, payload: jsonEncode(remoteMessage.toMap()));
       } else {
-        await FlutterLocalNotificationsPlugin().show(0, AppTranslations.title, '', platformChannelSpecifics, payload: jsonEncode(remoteMessage.toMap()));
+        await FlutterLocalNotificationsPlugin().show(notificationNo, AppTranslations.title, '', platformChannelSpecifics, payload: jsonEncode(remoteMessage.toMap()));
       }
     } else {
-      await FlutterLocalNotificationsPlugin().show(0, AppTranslations.title, notificationMsg, platformChannelSpecifics, payload: jsonEncode(remoteMessage.toMap()));
+      await FlutterLocalNotificationsPlugin().show(notificationNo, AppTranslations.title, notificationMsg, platformChannelSpecifics, payload: jsonEncode(remoteMessage.toMap()));
     }
   }
 
@@ -168,19 +171,3 @@ class LocalNotificationService {
 //   timezone.setLocalLocation(timezone.getLocation('America/Detroit'));
 // }
 }
-/*
-
-E/flutter (30480): [ERROR:flutter/runtime/dart_vm_initializer.cc(41)] Unhandled Exception: Null check operator used on a null value
-E/flutter (30480): #0      MethodChannelFirebaseMessaging.registerBackgroundMessageHandler (package:firebase_messaging_platform_interface/src/method_channel/method_channel_messaging.dart:181)
-E/flutter (30480): #1      FirebaseMessagingPlatform.onBackgroundMessage= (package:firebase_messaging_platform_interface/src/platform_interface/platform_interface_messaging.dart:102)
-E/flutter (30480): #2      FirebaseMessaging.onBackgroundMessage (package:firebase_messaging/src/messaging.dart:73)
-E/flutter (30480): #3      FirebaseServices.firebaseInit (package:handover/view_model/firebase_view_model.dart:45)
-E/flutter (30480): <asynchronous suspension>
-E/flutter (30480):
-E/flutter (30480): [ERROR:flutter/runtime/dart_vm_initializer.cc(41)] Unhandled Exception: Null check operator used on a null value
-E/flutter (30480): #0      _evaluateBackgroundNotificationCallback (package:flutter_local_notifications/src/platform_flutter_local_notifications.dart:1026)
-E/flutter (30480): #1      AndroidFlutterLocalNotificationsPlugin.initialize (package:flutter_local_notifications/src/platform_flutter_local_notifications.dart:148)
-E/flutter (30480): #2      FlutterLocalNotificationsPlugin.initialize (package:flutter_local_notifications/src/flutter_local_notifications_plugin.dart:142)
-E/flutter (30480): #3      LocalNotificationService.initFLN (package:handover/view_model/local_notification_view_model.dart:59)
-E/flutter (30480): <asynchronous suspension>
-            * */

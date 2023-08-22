@@ -35,16 +35,18 @@ dependencies:
   flutter_fadein: ^2.0.0
   flutter_animated_dialog: ^2.0.1
   # location services
-  geolocator: ^9.0.1
+  geolocator: ^10.0.0
   google_maps_flutter: ^2.2.0
   geocoding: ^2.0.5
-  map_location_picker: ^1.2.6
+#  map_location_picker: ^1.2.6
   #  add poly-lines
   location: ^5.0.1
 #  geocoder_buddy: ^1.0.1
   url_launcher: ^6.1.9
   #  firebase packages
   firebase_core: ^2.6.1
+  firebase_auth: ^4.7.3
+  cloud_firestore: ^4.8.5
   firebase_messaging: ^14.2.4
   flutter_local_notifications: ^15.1.0+1
   device_info_plus: ^9.0.2
