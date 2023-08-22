@@ -77,5 +77,9 @@
 	<true/>
 	<key>UIStatusBarHidden</key>
 	<true/>
+	<key>BGTaskSchedulerPermittedIdentifiers</key>
+    <array>
+        <string>dev.flutter.background.refresh</string>
+    </array>
 </dict>
 </plist>

@@ -19,6 +19,9 @@ Future<void> main() async {
 
   await injectorSetup();
 
+  /// start background services
+  await getIt<BackgroundViewModel>().initState();
+
   SystemChrome.setEnabledSystemUIMode(SystemUiMode.immersive, overlays: []);
 
   SystemChrome.setPreferredOrientations([

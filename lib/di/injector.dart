@@ -12,4 +12,5 @@ Future<void> injectorSetup() async {
   getIt.registerSingleton<BusDriversViewModel>(BusDriversViewModel());
   getIt.registerSingleton<SplashScreenViewModel>(SplashScreenViewModel());
   getIt.registerSingleton<LanguageViewModel>(LanguageViewModel());
+  getIt.registerSingleton<BackgroundViewModel>(BackgroundViewModel());
 }

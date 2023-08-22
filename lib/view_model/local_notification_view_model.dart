@@ -23,6 +23,8 @@ class LocalNotificationService {
   static final BehaviorSubject<String> selectNotificationSubject = BehaviorSubject<String>();
   static late String? selectedNotificationPayload;
 
+  notificationNo() async => (await FlutterLocalNotificationsPlugin().getActiveNotifications()).length;
+
   initializeLocalNotification() {
     /// init flutter locale notification
     initFLN();
@@ -151,17 +153,16 @@ class LocalNotificationService {
     'Future<void> showNotification(String notificationMsg $notificationMsg'.debug(this);
     'Future<void> showNotification(String remoteMessage ${remoteMessage.toMap()}'.debug(this);
 
-    int notificationNo = (await FlutterLocalNotificationsPlugin().getActiveNotifications()).length;
     if (notificationMsg.toLowerCase().contains('android') || notificationMsg.toLowerCase().contains('apple')) {
       var notificationPayload = jsonDecode(notificationMsg);
       if (notificationPayload is Map<String, dynamic> && notificationPayload.containsKey('title') && notificationPayload.containsKey('body')) {
-        await FlutterLocalNotificationsPlugin()
-            .show(notificationNo, notificationPayload['title'] ?? AppTranslations.title, notificationPayload['body'] ?? '', platformChannelSpecifics, payload: jsonEncode(remoteMessage.toMap()));
+        await FlutterLocalNotificationsPlugin().show(await notificationNo(), notificationPayload['title'] ?? AppTranslations.title, notificationPayload['body'] ?? '', platformChannelSpecifics,
+            payload: jsonEncode(remoteMessage.toMap()));
       } else {
-        await FlutterLocalNotificationsPlugin().show(notificationNo, AppTranslations.title, '', platformChannelSpecifics, payload: jsonEncode(remoteMessage.toMap()));
+        await FlutterLocalNotificationsPlugin().show(await notificationNo(), AppTranslations.title, '', platformChannelSpecifics, payload: jsonEncode(remoteMessage.toMap()));
       }
     } else {
-      await FlutterLocalNotificationsPlugin().show(notificationNo, AppTranslations.title, notificationMsg, platformChannelSpecifics, payload: jsonEncode(remoteMessage.toMap()));
+      await FlutterLocalNotificationsPlugin().show(await notificationNo(), AppTranslations.title, notificationMsg, platformChannelSpecifics, payload: jsonEncode(remoteMessage.toMap()));
     }
   }
 
